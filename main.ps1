@@ -319,28 +319,60 @@ function List-EventLogs
             $checkError=Get-EventLog -logname $logName -Newest $numEvents -After $timeAfter -Before $timeBefore -ErrorAction SilentlyContinue
             if($checkError -eq $True)
             {
+	    	Clear-host
                 $checkError
-                
+		Read-Host 'Press ENTER to return to System Admin Menu'
+		System-Admin
             }else{
-                
+	    	Clear-host
+                Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
+		read-host 'Press ENTER to return to System Admin Menu'
+		System-Admin
             }
         }elseif(!$timeAfter)
         {
             $CheckError=Get-EventLog -logname $logName -Newest $numEvents -Message $Keyword
+	    if($checkError -eq $True)
+            {
+	    	Clear-host
+                $checkError
+		Read-Host 'Press ENTER to return to System Admin Menu'
+		System-Admin
+            }else{
+	   	Clear-host
+                Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
+		read-host 'Press ENTER to return to System Admin Menu'
+		System-Admin
+            }
         }
     }else{
         $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
         if($PathExists -eq $True)
         {
-            if(!$keyword)
-            {
-                $checkError=Get-EventLog -logname $logName -Newest $numEvents -After $timeAfter -Before $timeBefore -ErrorAction SilentlyContinue
-                if($checkError-eq $true)
-                {
-                    $checkError | out-file $path'.cvs'
+        	if(!$keyword)
+            	{
+                	$checkError=Get-EventLog -logname $logName -Newest $numEvents -After $timeAfter -Before $timeBefore -ErrorAction SilentlyContinue
+                	if($checkError -eq $True)
+                	{
+                    		$checkError | out-file $path'.cvs'
+			}else{
+				Clear-host
+				Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
+				read-host 'Press ENTER to return to System Admin Menu'
+				System-Admin
+			}
                 }elseif(!$timeAfter)
                 {
-                    
+                    $CheckError=Get-EventLog -logname $logName -Newest $numEvents -Message $Keyword
+		    if($checkError -eq $True)
+		    {
+		    	$checkError | out-file $path'.cvs'
+		    }else{
+		    	Clear-host
+		    	Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
+			read-host 'Press ENTER to return to System Admin Menu'
+			System-Admin
+		    }
                 }
             $fileExists=test-path $path'.cvs'
             if($fileExists -eq $True)
@@ -377,7 +409,6 @@ function System-Admin
         '5' {List-EventLogs}
         '6' {MainMenu}
         '7' {return}
-
     }
 }
 
