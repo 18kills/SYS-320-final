@@ -269,9 +269,90 @@ function List-SysInfo
     }
 }
 
+function CheckLogName
+{
+	clear-host
+	$logName=Read-Host 'Enter the name of log'
+	$CheckIfExists=Get-EventLog -logname $logName -ErrorAction SilentlyContinue
+	if(!$CheckIfExists)
+	{
+    	Clear-host
+    	Write-host -foregroundcolor red 'The log Name you entered does not exist. Please try again'
+    	Read-Host 'Press ENTER to continue'
+        CheckLogName
+	}
+	return
+}
+
 function List-EventLogs
 {
+    $keyword=''
+    $timeAfter=''
+    $timeBefore=''
     Clear-Host
+    $logName=CheckLogName
+    Clear-Host
+    $numEvents=Read-Host 'Enter the number of events to display'
+    Clear-Host
+    Write-host 'Pick an option by entering the number of the option that you want'
+    Write-host '1. Keyword search'
+    Write-Host '2. timeframe search'
+    $option=read-host 'Pick an option'
+    switch($option)
+    {
+        1{
+            Clear-Host
+            $keyword=read-host 'Enter a keyword'
+        }
+        2{
+            Clear-Host
+            Write-host 'Ex: 1/17/2019 08:00:00'
+            $timeAfter=Read-Host 'Enter a time to look at events after that time'
+            $timeBefore=Read-host'Enter time to look at events before that time'
+        }
+    }
+    $path=outputs -num 4
+    if(!$path)
+    {
+        if(!$keyword)
+        {
+            $checkError=Get-EventLog -logname $logName -Newest $numEvents -After $timeAfter -Before $timeBefore -ErrorAction SilentlyContinue
+            if($checkError -eq $True)
+            {
+                $checkError
+                
+            }else{
+                
+            }
+        }elseif(!$timeAfter)
+        {
+            $CheckError=Get-EventLog -logname $logName -Newest $numEvents -Message $Keyword
+        }
+    }else{
+        $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
+        if($PathExists -eq $True)
+        {
+            if(!$keyword)
+            {
+                $checkError=Get-EventLog -logname $logName -Newest $numEvents -After $timeAfter -Before $timeBefore -ErrorAction SilentlyContinue
+                if($checkError-eq $true)
+                {
+                    $checkError | out-file $path'.cvs'
+                }elseif(!$timeAfter)
+                {
+                    
+                }
+            $fileExists=test-path $path'.cvs'
+            if($fileExists -eq $True)
+            {
+                outputs -num 1
+            }else{
+                outputs -num 2
+            }
+        }else{
+            outputs -num 3
+        }
+    }
 }
 
 function System-Admin
