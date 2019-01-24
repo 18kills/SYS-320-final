@@ -286,105 +286,105 @@ function CheckLogName
 
 function List-EventLogs
 {
-    $keyword=''
-    $timeAfter=''
-    $timeBefore=''
-    Clear-Host
-    $logName=CheckLogName
-    Clear-Host
-    $numEvents=Read-Host 'Enter the number of events to display'
-    Clear-Host
-    Write-host 'Pick an option by entering the number of the option that you want'
-    Write-host '1. Keyword search'
-    Write-Host '2. timeframe search'
-    $option=read-host 'Pick an option'
-    switch($option)
-    {
-        1{
-            Clear-Host
-            $keyword=read-host 'Enter a keyword'
-        }
-        2{
-            Clear-Host
-            Write-host 'Ex: 1/17/2019 08:00:00'
-            $timeAfter=Read-Host 'Enter a time to look at events after that time'
-            $timeBefore=Read-host'Enter time to look at events before that time'
-        }
-    }
-    $path=outputs -num 4
-    if(!$path)
-    {
-        if(!$keyword)
-        {
-            $checkError=Get-EventLog -logname $logName -Newest $numEvents -After $timeAfter -Before $timeBefore -ErrorAction SilentlyContinue
-            if($checkError -eq $True)
-            {
-	    	Clear-host
-                $checkError
-		Read-Host 'Press ENTER to return to System Admin Menu'
-		System-Admin
-            }else{
-	    	Clear-host
-                Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
-		read-host 'Press ENTER to return to System Admin Menu'
-		System-Admin
-            }
-        }elseif(!$timeAfter)
-        {
-            $CheckError=Get-EventLog -logname $logName -Newest $numEvents -Message $Keyword
-	    if($checkError -eq $True)
-            {
-	    	Clear-host
-                $checkError
-		Read-Host 'Press ENTER to return to System Admin Menu'
-		System-Admin
-            }else{
-	   	Clear-host
-                Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
-		read-host 'Press ENTER to return to System Admin Menu'
-		System-Admin
-            }
-        }
-    }else{
-        $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
-        if($PathExists -eq $True)
-        {
-        	if(!$keyword)
-            	{
-                	$checkError=Get-EventLog -logname $logName -Newest $numEvents -After $timeAfter -Before $timeBefore -ErrorAction SilentlyContinue
-                	if($checkError -eq $True)
-                	{
-                    		$checkError | out-file $path'.cvs'
+	$keyword=''
+	$timeAfter=''
+	$timeBefore=''
+	Clear-Host
+	$logName=CheckLogName
+	Clear-Host
+	$numEvents=Read-Host 'Enter the number of events to display'
+	Clear-Host
+	Write-host 'Pick an option by entering the number of the option that you want'
+	Write-host '1. Keyword search'
+	Write-Host '2. timeframe search'
+	$option=read-host 'Pick an option'
+	switch($option)
+	{
+		1{
+			Clear-Host
+			$keyword=read-host 'Enter a keyword'
+		}
+		2{
+			Clear-Host
+			Write-host 'Ex: 1/17/2019 08:00:00'
+			$timeAfter=Read-Host 'Enter a time to look at events after that time'
+			$timeBefore=Read-host'Enter time to look at events before that time'
+		}
+	}
+	$path=outputs -num 4
+	if(!$path)
+	{
+		if(!$keyword)
+		{
+			$checkError=Get-EventLog -logname $logName -Newest $numEvents -After $timeAfter -Before $timeBefore -ErrorAction SilentlyContinue
+			if($checkError -eq $True)
+			{
+				Clear-host
+				$checkError
+				Read-Host 'Press ENTER to return to System Admin Menu'
+				System-Admin
 			}else{
 				Clear-host
 				Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
 				read-host 'Press ENTER to return to System Admin Menu'
 				System-Admin
 			}
-                }elseif(!$timeAfter)
-                {
-                    $CheckError=Get-EventLog -logname $logName -Newest $numEvents -Message $Keyword
-		    if($checkError -eq $True)
-		    {
-		    	$checkError | out-file $path'.cvs'
-		    }else{
-		    	Clear-host
-		    	Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
-			read-host 'Press ENTER to return to System Admin Menu'
-			System-Admin
-		    }
-                }
-            $fileExists=test-path $path'.cvs'
-            if($fileExists -eq $True)
-            {
-                outputs -num 1
-            }else{
-                outputs -num 2
-            }
-        }else{
-            outputs -num 3
-        }
-    }
+		}elseif(!$timeAfter)
+		{
+			$CheckError=Get-EventLog -logname $logName -Newest $numEvents -Message $Keyword
+			if($checkError -eq $True)
+			{
+				Clear-host
+				$checkError
+				Read-Host 'Press ENTER to return to System Admin Menu'
+				System-Admin
+			}else{
+				Clear-host
+				Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
+				read-host 'Press ENTER to return to System Admin Menu'
+				System-Admin
+			}
+		}
+	}else{
+		$PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
+		if($PathExists -eq $True)
+		{
+			if(!$keyword)
+			{
+				$checkError=Get-EventLog -logname $logName -Newest $numEvents -After $timeAfter -Before $timeBefore -ErrorAction SilentlyContinue
+				if($checkError -eq $True)
+				{
+					$checkError | out-file $path'.cvs'
+				}else{
+					Clear-host
+					Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
+					read-host 'Press ENTER to return to System Admin Menu'
+					System-Admin
+				}
+			}elseif(!$timeAfter)
+			{
+				$CheckError=Get-EventLog -logname $logName -Newest $numEvents -Message $Keyword
+				if($checkError -eq $True)
+				{
+					$checkError | out-file $path'.cvs'
+				}else{
+					Clear-host
+					Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
+					read-host 'Press ENTER to return to System Admin Menu'
+					System-Admin
+				}
+			}
+			$fileExists=test-path $path'.cvs'
+			if($fileExists -eq $True)
+			{
+				outputs -num 1
+			}else{
+				outputs -num 2
+			}
+		}else{
+			outputs -num 3
+		}
+	}
 }
 
 function System-Admin
