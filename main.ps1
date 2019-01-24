@@ -276,10 +276,10 @@ function CheckLogName
 	$CheckIfExists=Get-EventLog -logname $logName -ErrorAction SilentlyContinue
 	if(!$CheckIfExists)
 	{
-    	Clear-host
-    	Write-host -foregroundcolor red 'The log Name you entered does not exist. Please try again'
-    	Read-Host 'Press ENTER to continue'
-        CheckLogName
+		Clear-host
+		Write-host -foregroundcolor red 'The log Name you entered does not exist. Please try again'
+		Read-Host 'Press ENTER to continue'
+		CheckLogName
 	}
 	return
 }
