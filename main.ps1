@@ -418,6 +418,51 @@ function System-Admin
 function Search-Vulnerabilities
 {
     Clear-Host
+    Write-Host -ForegroundColor Yellow 'To select an option enter the options number'
+    write-host -ForegroundColor Green '1. Search file for CVE name'
+    write-host -ForegroundColor Green '2. Search file for CVE description'
+    $selection=Read-host 'Make a selection'
+    switch($selection)
+    {
+    	1{
+		clear-host
+		$name=read-host 'Enter CVE name'
+	}
+	2{
+		clear-host
+		$description=read-host 'Enter CVE description'
+	}
+    }
+    clear-host
+    $answer=Read-host 'Do you want to also search for a software package name or package name and version(Y/N)'
+    if($answer -eq 'n' -or $answer -eq 'N')
+    {
+    	
+	}elseif($answer -eq 'y' -or $answer -eq 'Y')
+	{
+		clear-host
+		Write-Host -ForegroundColor Yellow 'To select an option enter the options number'
+		Write-host -ForegroundColor Green '1. Search for software package name'
+		Write-host -ForegroundColor Green '2. Search for package name'
+		Write-host -ForegroundColor Green '3. Search for version'
+		$selection=read-host 'Make a selection'
+		switch($selection)
+		{
+			1{
+				clear-host
+				$SoftPackName=read-host 'Enter a Software Package Name'
+			}
+			2{
+				clear-host
+				$packName=read-host 'enter a Package Name'
+			}
+			3{
+				clear-host
+				$version=read-host 'Enter the version'
+			}
+		}
+		
+	}
 }
 
 function Security-Admin
