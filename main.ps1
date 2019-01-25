@@ -1,13 +1,12 @@
 function outputs
 {
-    param([int]$num)
-    $path=getPath
+    param([int]$num,[string]$path)
     switch($num)
     {
         1{
             Clear-Host
             Write-Host -ForegroundColor Magenta 'File has been saved to '$path'.cvs'
-            Write-Host 'Press ENTER to continue...'
+            Read-Host 'Press ENTER to continue...'
             System-Admin
         }
         2{
@@ -56,7 +55,7 @@ function List-Processes
                 $fileExists=test-path $path'.cvs'
                 if($fileExists -eq $True)
                 {
-                    outputs -num 1
+                    outputs -num 1 -path $path
                 }else{
                     outputs -num 2
                 }
@@ -65,7 +64,6 @@ function List-Processes
             }
         }
     }else{
-        $path=outputs -num 4
         $processActive=Get-Process $processName -ErrorAction SilentlyContinue
         if(!$processActive)
         {
@@ -74,6 +72,7 @@ function List-Processes
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
+            $path=outputs -num 4
             if(!$path)
             {
                 Clear-Host
@@ -81,6 +80,7 @@ function List-Processes
                 Read-Host 'Press ENTER to continue...'
                 System-Admin
             }else{
+                $path=$path.replace('/','\')
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
                 {
@@ -88,7 +88,7 @@ function List-Processes
                     $fileExists=test-path $path'.cvs'
                     if($fileExists -eq $True)
                     {
-                        outputs -num 1
+                        outputs -num 1 -path $path
                     }else{
                         outputs -num 2
                     }
@@ -124,7 +124,7 @@ function List-Services
                 $fileExists=test-path $path'.cvs'
                 if($fileExists -eq $True)
                 {
-                    outputs -num 1
+                    outputs -num 1 -path $path
                 }else{
                     outputs -num 2
                 }
@@ -133,7 +133,6 @@ function List-Services
             }
         }
     }else{
-        $path=outputs -num 4
         $serviceActive=Get-Service -Name $serviceName -ErrorAction SilentlyContinue | Where-Object {$_.Status -eq "Running"}
         if(!$serviceActive)
         {
@@ -142,6 +141,7 @@ function List-Services
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
+            $path=outputs -num 4
             if(!$path)
             {
                 Clear-Host
@@ -149,6 +149,7 @@ function List-Services
                 Read-Host 'Press ENTER to continue...'
                 System-Admin
             }else{
+                $path=$path.replace('/','\')
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
                 {
@@ -156,7 +157,7 @@ function List-Services
                     $fileExists=test-path $path'.cvs'
                     if($fileExists -eq $True)
                     {
-                        outputs -num 1
+                        outputs -num 1 -path $path
                     }else{
                         outputs -num 2
                     }
@@ -192,7 +193,7 @@ function List-Packages
                 $fileExists=test-path $path'.cvs'
                 if($fileExists -eq $True)
                 {
-                    outputs -num 1
+                    outputs -num 1 -path $path
                 }else{
                     outputs -num 2
                 }
@@ -201,30 +202,31 @@ function List-Packages
             }
         }
     }else{
-        $path=outputs -num 4
         $packageActive=Get-Package -Name $packageName -ErrorAction SilentlyContinue
-        if(!$processActive)
+        if(!$packageActive)
         {
             Clear-Host
             Write-Host -ForegroundColor Red 'ERROR: Package '$packageName' is not installed'
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
+            $path=outputs -num 4
             if(!$path)
             {
                 Clear-Host
-                Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate, DisplayVersion | Where-object {$_.DisplayName -eq 'battle.net'}
+                Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate, DisplayVersion | Where-object {$_.DisplayName -eq $packageName}
                 Read-Host 'Press ENTER to continue...'
                 System-Admin
             }else{
+                $path=$path.replace('/','\')
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
                 {
-                    Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate, DisplayVersion | Where-object {$_.DisplayName -eq 'battle.net'} | Out-File $path'.cvs'
+                    Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate, DisplayVersion | Where-object {$_.DisplayName -eq $packageName} | Out-File $path'.cvs'
                     $fileExists=test-path $path'.cvs'
                     if($fileExists -eq $True)
                     {
-                        outputs -num 1
+                        outputs -num 1 -path $path
                     }else{
                         outputs -num 2
                     }
@@ -259,7 +261,7 @@ function List-SysInfo
             $fileExists=test-path $path'.cvs'
             if($fileExists -eq $True)
             {
-                outputs -num 1
+                outputs -num 1 -path $path
             }else{
                 outputs -num 2
             }
@@ -346,6 +348,7 @@ function List-EventLogs
 			}
 		}
 	}else{
+        $path=$path.replace('/','\')
 		$PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
 		if($PathExists -eq $True)
 		{
@@ -377,7 +380,7 @@ function List-EventLogs
 			$fileExists=test-path $path'.cvs'
 			if($fileExists -eq $True)
 			{
-				outputs -num 1
+				outputs -num 1 -path $path
 			}else{
 				outputs -num 2
 			}
