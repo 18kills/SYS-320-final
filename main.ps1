@@ -417,6 +417,20 @@ function System-Admin
 
 function Search-Vulnerabilities
 {
+	Clear-Host
+    $downFile=Read-host 'Download the Security vulnerabilites file(Y/N)'
+    if($downFile -eq 'y' -or $downFile -eq 'Y')
+    {
+       $url='https://cve.mitre.org/data/downloads/allitems.csv'
+       $mydocuments = [environment]::getfolderpath("mydocuments")
+       $mydocuments+='\SecVuln.cvs'
+       $output=$mydocuments
+       Import-Module BitsTransfer
+       Start-BitsTransfer -Source $url -Destination $output
+    }elseif($downFile -eq 'n' -or $downFile -eq 'N')
+    {
+        
+    }
     Clear-Host
     Write-Host -ForegroundColor Yellow 'To select an option enter the options number'
     write-host -ForegroundColor Green '1. Search file for CVE name'
