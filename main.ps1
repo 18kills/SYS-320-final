@@ -419,19 +419,7 @@ function Search-Vulnerabilities
 {
 	Clear-Host
     $downFile=Read-host 'Download the Security vulnerabilites file(Y/N)'
-    if($downFile -eq 'y' -or $downFile -eq 'Y')
-    {
-       $url='https://cve.mitre.org/data/downloads/allitems.csv'
-       $mydocuments = [environment]::getfolderpath("mydocuments")
-       $mydocuments+='\SecVuln.cvs'
-       $output=$mydocuments
-       Import-Module BitsTransfer
-       Start-BitsTransfer -Source $url -Destination $output
-    }elseif($downFile -eq 'n' -or $downFile -eq 'N')
-    {
-        
-    }
-    Clear-Host
+	Clear-Host
     Write-Host -ForegroundColor Yellow 'To select an option enter the options number'
     write-host -ForegroundColor Green '1. Search file for CVE name'
     write-host -ForegroundColor Green '2. Search file for CVE description'
@@ -439,20 +427,17 @@ function Search-Vulnerabilities
     switch($selection)
     {
     	1{
-		clear-host
-		$name=read-host 'Enter CVE name'
-	}
-	2{
-		clear-host
-		$description=read-host 'Enter CVE description'
-	}
+			clear-host
+			$name=read-host 'Enter CVE name'
+		}
+		2{
+			clear-host
+			$description=read-host 'Enter CVE description'
+		}
     }
-    clear-host
+	clear-host
     $answer=Read-host 'Do you want to also search for a software package name or package name and version(Y/N)'
-    if($answer -eq 'n' -or $answer -eq 'N')
-    {
-    	
-	}elseif($answer -eq 'y' -or $answer -eq 'Y')
+    if($answer -eq 'y' -or $answer -eq 'Y')
 	{
 		clear-host
 		Write-Host -ForegroundColor Yellow 'To select an option enter the options number'
@@ -468,15 +453,25 @@ function Search-Vulnerabilities
 			}
 			2{
 				clear-host
-				$packName=read-host 'enter a Package Name'
+				$packName=read-host 'Enter a Package Name'
 			}
 			3{
 				clear-host
 				$version=read-host 'Enter the version'
 			}
 		}
-		
 	}
+    if($downFile -eq 'y' -or $downFile -eq 'Y')
+    {
+       $url='https://cve.mitre.org/data/downloads/allitems.csv'
+       $mydocuments = [environment]::getfolderpath("mydocuments")
+       $mydocuments+='\SecVuln.cvs'
+       $output=$mydocuments
+       Import-Module BitsTransfer
+       Start-BitsTransfer -Source $url -Destination $output
+    }elseif($downFile -eq 'n' -or $downFile -eq 'N'){
+        
+    }
 }
 
 function Security-Admin
