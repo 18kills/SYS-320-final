@@ -1,6 +1,9 @@
+#This function is used for outputs that are used multiple times for the functions below
 function outputs
 {
+    #Gets paramiters 
     param([int]$num,[string]$path)
+    #Determines which options was choosen
     switch($num)
     {
         1{
@@ -31,6 +34,7 @@ function outputs
         }
     }
 }
+#This function is used to get user responses and then output running processes based on the users responses
 function List-Processes
 {
     Clear-Host
@@ -43,14 +47,17 @@ function List-Processes
         if(!$path)
         {
             Clear-Host
+            #Outputs the running processes 
             Get-Process
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
+            #this checks if the path exists
             $path=$path.replace('/','\')
             $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
             if($PathExists -eq $True)
             {
+                #outputs running processes to a file
                 Get-Process | Out-File $path'.cvs'
                 $fileExists=test-path $path'.cvs'
                 if($fileExists -eq $True)
@@ -64,18 +71,22 @@ function List-Processes
             }
         }
     }else{
+        #Checks if the process that the user specified is running
         $processActive=Get-Process $processName -ErrorAction SilentlyContinue
         if(!$processActive)
         {
+            #Tells the user that the process that was specified is not running
             Clear-Host
             Write-Host -ForegroundColor Red 'ERROR: Process '$processName' is not running'
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
+            #gets the path to save the file from the user
             $path=outputs -num 4
             if(!$path)
             {
                 Clear-Host
+                #outputs a specific process
                 Get-Process $processName
                 Read-Host 'Press ENTER to continue...'
                 System-Admin
@@ -84,6 +95,7 @@ function List-Processes
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
                 {
+                    #outputs a specific process to a file
                     Get-Process $processName | Out-File $path'.cvs'
                     $fileExists=test-path $path'.cvs'
                     if($fileExists -eq $True)
@@ -99,27 +111,32 @@ function List-Processes
         }
     }
 }
-
+#This function is used to list services
 function List-Services
 {
     Clear-Host
+    #Prompts the user for the name of a service
     Write-Host -ForegroundColor Green 'Enter the name of the service'
     Write-Host -ForegroundColor Green 'Leave blank if you want to see all running services'
     $serviceName=Read-Host 'Enter service name'
     if(!$serviceName)
     {
+        #gets a path for a file to output results to
         $path=outputs -num 4
         if(!$path)
         {
+            #outputs results of all running services to the screen
             Clear-Host
             Get-Service | Where-Object {$_.Status -eq "Running"}
             Read-Host 'Press Enter to return to the Systen Admin Menu'
             System-Admin
         }else{
+            #checks if the path exists
             $path=$path.replace('/','\')
             $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
             if($PathExists -eq $True)
             {
+                #sends the output of all running services to the user specified file
                 Get-Service | Where-Object {$_.Status -eq "Running"} | out-file $path'.cvs'
                 $fileExists=test-path $path'.cvs'
                 if($fileExists -eq $True)
@@ -133,9 +150,11 @@ function List-Services
             }
         }
     }else{
+        #checks to see if the service specified by the user is running
         $serviceActive=Get-Service -Name $serviceName -ErrorAction SilentlyContinue | Where-Object {$_.Status -eq "Running"}
         if(!$serviceActive)
         {
+            #Tells the user the service that was specified is not running
             Clear-Host
             Write-Host -ForegroundColor Red 'ERROR: Service '$serviceName' is not running'
             Read-Host 'Press ENTER to return to the System Admin Menu'
@@ -144,6 +163,7 @@ function List-Services
             $path=outputs -num 4
             if(!$path)
             {
+                #outputs the running service info to the screen
                 Clear-Host
                 Get-Service -Name $servieName | Where-Object {$_.Status -eq "Running"}
                 Read-Host 'Press ENTER to continue...'
@@ -153,6 +173,7 @@ function List-Services
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
                 {
+                    #outputs the service info to a file
                     Get-Service -Name $serviceName | Out-File $path'.cvs'
                     $fileExists=test-path $path'.cvs'
                     if($fileExists -eq $True)
@@ -168,27 +189,32 @@ function List-Services
         }
     }
 }
-
+#This function is used to list packages that are installed on the computer
 function List-Packages
 {
+    #Asks the user for the name of a package
     Clear-Host
     Write-Host -ForegroundColor Green 'Enter the name of the package'
     Write-Host -ForegroundColor Green 'Leave blank if you want to see all installed packages'
     $packageName=Read-Host 'Enter Package name'
     if(!$packageName)
     {
+        #gets a path for the save file from the user
         $path=outputs -num 4
         if(!$path)
         {
+            #outputs all installed packages to the screen
             Clear-Host
             Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate, DisplayVersion | Format-Table –AutoSize 
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
+            #checks if the path exists
             $path=$path.replace('/','\')
             $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
             if($PathExists -eq $True)
             {
+                #Sends a list of all installed packages to the file
                 Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate, DisplayVersion | Format-Table –AutoSize | Out-File $path'.cvs'
                 $fileExists=test-path $path'.cvs'
                 if($fileExists -eq $True)
@@ -202,9 +228,11 @@ function List-Packages
             }
         }
     }else{
+        #checks if the package that the user specificed is installed
         $packageActive=Get-Package -Name $packageName -ErrorAction SilentlyContinue
         if(!$packageActive)
         {
+            #tells the user the specified package is not installed
             Clear-Host
             Write-Host -ForegroundColor Red 'ERROR: Package '$packageName' is not installed'
             Read-Host 'Press ENTER to return to the System Admin Menu'
@@ -213,8 +241,9 @@ function List-Packages
             $path=outputs -num 4
             if(!$path)
             {
+                #OUtputs the info on the specified package to the screen
                 Clear-Host
-                Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate, DisplayVersion | Where-object {$_.DisplayName -eq $packageName}
+                Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate, DisplayVersion | Where-object {$_.DisplayName -eq $packageName} | Format-Table –AutoSize
                 Read-Host 'Press ENTER to continue...'
                 System-Admin
             }else{
@@ -222,7 +251,8 @@ function List-Packages
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
                 {
-                    Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate, DisplayVersion | Where-object {$_.DisplayName -eq $packageName} | Out-File $path'.cvs'
+                    #sends the info for the specified package to the file
+                    Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, InstallDate, DisplayVersion | Where-object {$_.DisplayName -eq $packageName} | Format-Table –AutoSize | Out-File $path'.cvs'
                     $fileExists=test-path $path'.cvs'
                     if($fileExists -eq $True)
                     {
@@ -237,23 +267,28 @@ function List-Packages
         }
     }
 }
-
+# this function get the systems information
 function List-SysInfo
 {
     Clear-Host
+    #Gets a path for file to send info
     $path=outputs -num 4
     if(!$path)
     {
+        #Prints info about the computer to the screen
         Clear-Host
         Get-PSDrive -PSProvider "FileSystem" | select Name,MaxCapacity,Used,Free,Root
         Get-WmiObject -class "Win32_PhysicalMemoryArray" | select Name,MaxCapacity
-        Get-WMIObject win32_Processor | select nameRead-Host 'Press ENTER to return to the System Admin Menu'
+        Get-WMIObject win32_Processor | select name
+        read-host 'Press ENTER to return to the System Admin Menu'
         System-Admin
     }else{
+        #checks if the path exists
         $path=$path.replace('/','\')
         $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
         if($PathExists -eq $True)
         {
+            #sends the info about the computer to the file
             $disk=Get-PSDrive -PSProvider "FileSystem" | select Name,MaxCapacity,Used,Free,Root
             $ram=Get-WmiObject -class "Win32_PhysicalMemoryArray" | select Name,MaxCapacity
             $cpu=Get-WMIObject win32_Processor | select name
@@ -270,22 +305,26 @@ function List-SysInfo
         }
     }
 }
-
+#this function is used with list-eventlogs
 function CheckLogName
 {
+    #this checks if thye log name that the user entered exists
 	clear-host
 	$logName=Read-Host 'Enter the name of log'
 	$CheckIfExists=Get-EventLog -logname $logName -ErrorAction SilentlyContinue
 	if(!$CheckIfExists)
 	{
+        #tells the user the log doesnt exist
 		Clear-host
 		Write-host -foregroundcolor red 'The log Name you entered does not exist. Please try again'
 		Read-Host 'Press ENTER to continue'
 		CheckLogName
-	}
-	return
+	}else{
+        #returns the name og the log the user specified if the log was found
+	    return $logName
+    }
 }
-
+#this function gets logs based on the parameters that the user enters
 function List-EventLogs
 {
 	$keyword=''
@@ -308,9 +347,9 @@ function List-EventLogs
 		}
 		2{
 			Clear-Host
-			Write-host 'Ex: 1/17/2019 08:00:00'
-			$timeAfter=Read-Host 'Enter a time to look at events after that time'
-			$timeBefore=Read-host'Enter time to look at events before that time'
+			Write-host 'Ex: 1/17/2019'
+			$timeAfter=Read-Host 'Enter a date to look at events after that date'
+			$timeBefore=Read-host 'Enter date to look at events before that date'
 		}
 	}
 	$path=outputs -num 4
@@ -327,7 +366,7 @@ function List-EventLogs
 				System-Admin
 			}else{
 				Clear-host
-				Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
+				Write-host -ForegroundColor Red 'ERROR the paramaters you entered do not return any results'
 				read-host 'Press ENTER to return to System Admin Menu'
 				System-Admin
 			}
@@ -342,7 +381,7 @@ function List-EventLogs
 				System-Admin
 			}else{
 				Clear-host
-				Write-host -ForegroundColor -Red 'ERROR the paramaters you entered do not return any results'
+				Write-host -ForegroundColor Red 'ERROR the paramaters you entered do not return any results'
 				read-host 'Press ENTER to return to System Admin Menu'
 				System-Admin
 			}
@@ -415,6 +454,54 @@ function System-Admin
     }
 }
 
+function email
+{
+    param($searchOutput)
+    clear-host
+    $answer=read-host 'Do you want to email the results (Y/N)'
+    if($answer -eq 'y' -or $answer -eq 'Y')
+    {
+        Clear-host
+        $numOutputs=$searchOutput | measure
+        $numOutputs=$numOutputs.Count
+        if($numOutputs -gt 1)
+        {
+            clear-host
+            $searchOutput
+            $num=read-host "How many CVE's do you want to send"
+            write-host 'Example: CVE-1999-0001'
+            $names=New-Object System.Collections.ArrayList
+            For($x=0;$x -lt $num;$x++ )
+            {
+                $cveName=read-host 'Enter name of CVE'
+                $names.add($cveName)
+            }
+            $output=$searchOutput | where {$names -eq $_.Name}
+        }else{
+            $output=$searchOutput
+        }
+        clear-host
+        $output=$output | select "Name","Status","Description","References","Phase"
+        $output=$output -replace ";","`n"
+        $output=$output -replace "@{",""
+        $output=$output -replace "}",""
+        $from=read-host 'Enter your email'
+        $to=read-host 'Enter email to send to'
+        $subject=read-host 'Enter the subject of the email'
+        $body=read-host 'Enter the message for the email'
+        $smtpserver=read-host 'Enter the smtp server address'
+        $smtpport=read-host 'Enter the smtp server port'
+        Send-MailMessage -From $from -to $to -Subject $subject -Body $body"`n$output" -SmtpServer $smtpserver -port $smtpport -UseSsl -Credential (Get-Credential) 
+        clear-host
+        write-host -ForegroundColor green 'The email was sent'
+        read-host 'Press ENTER to return to the main menu'
+        MainMenu
+    }else{
+        Clear-host
+        MainMenu
+    }
+}
+
 function Search-Vulnerabilities
 {
 	Clear-Host
@@ -428,49 +515,82 @@ function Search-Vulnerabilities
     {
     	1{
 			clear-host
-			$name=read-host 'Enter CVE name'
+            write-host 'Example: CVE-1999-0001'
+            $cveName=read-host 'Enter CVE name'
 		}
 		2{
 			clear-host
-			$description=read-host 'Enter CVE description'
+			Write-Host -ForegroundColor Yellow 'To select an option enter the options number'
+			Write-host -ForegroundColor Green '1. Search for software package name'
+			Write-host -ForegroundColor Green '2. Search for package name and version'
+			$selection=read-host 'Make a selection'
+			switch($selection)
+			{
+				1{
+					clear-host
+                    Write-host 'Example: BIND'
+					$SoftPackName=read-host 'Enter a Software Package Name'
+				}
+				2{
+					clear-host
+                    Write-host 'Example: BIND 4.9'
+					$packAndVersion=read-host 'Enter a Package Name and Version'
+				}
+			}
 		}
     }
-	clear-host
-    $answer=Read-host 'Do you want to also search for a software package name or package name and version(Y/N)'
-    if($answer -eq 'y' -or $answer -eq 'Y')
-	{
-		clear-host
-		Write-Host -ForegroundColor Yellow 'To select an option enter the options number'
-		Write-host -ForegroundColor Green '1. Search for software package name'
-		Write-host -ForegroundColor Green '2. Search for package name'
-		Write-host -ForegroundColor Green '3. Search for version'
-		$selection=read-host 'Make a selection'
-		switch($selection)
-		{
-			1{
-				clear-host
-				$SoftPackName=read-host 'Enter a Software Package Name'
-			}
-			2{
-				clear-host
-				$packName=read-host 'Enter a Package Name'
-			}
-			3{
-				clear-host
-				$version=read-host 'Enter the version'
-			}
-		}
-	}
     if($downFile -eq 'y' -or $downFile -eq 'Y')
     {
        $url='https://cve.mitre.org/data/downloads/allitems.csv'
        $mydocuments = [environment]::getfolderpath("mydocuments")
        $mydocuments+='\SecVuln.cvs'
-       $output=$mydocuments
+       $destination=$mydocuments
        Import-Module BitsTransfer
-       Start-BitsTransfer -Source $url -Destination $output
+       Start-BitsTransfer -Source $url -Destination $destination
+       $csv=Import-Csv $destination -header "Name","Status","Description","References","Phase","Votes","Comments"
+       if($cveName)
+       {
+            $searchOutput=$csv | where { $_.Name -match $cveName }
+            $searchOutput
+            if($searchOutput)
+            {
+                read-host 'Press ENTER to continue'
+                email -searchOutput $searchOutput
+            }else{
+                write-host -foregroundColor red 'You search came back with nothing'
+                read-host 'Press ENTER to return to main menu'
+                MainMenu
+            }
+       }elseif($SoftPackName){
+            $searchOutput=$csv | where { $_.Description -match $SoftPackName }
+            $searchOutput
+            if($searchOutput)
+            {
+                read-host 'Press ENTER to continue'
+                email -searchOutput $searchOutput
+            }else{
+                write-host -foregroundColor red 'You search came back with nothing'
+                read-host 'Press ENTER to return to main menu'
+                MainMenu
+            }
+       }elseif($packAndVersion){
+            $searchOutput=$csv | where { $_.Description -match $packAndVersion }
+            $searchOutput
+            if($searchOutput)
+            {
+                read-host 'Press ENTER to continue'
+                email -searchOutput $searchOutput
+            }else{
+                write-host -foregroundColor red 'You search came back with nothing'
+                read-host 'Press ENTER to return to main menu'
+                MainMenu
+            }
+       }
+       
     }elseif($downFile -eq 'n' -or $downFile -eq 'N'){
-        
+        Write-host 'The file has to be downloaded in order to search it'
+        read-host 'Press ENTER to return the Main Menu'
+        MainMenu
     }
 }
 
