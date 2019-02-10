@@ -333,12 +333,14 @@ function List-EventLogs
 	Clear-Host
 	$logName=CheckLogName
 	Clear-Host
+    #gets the user to choose an option
 	$numEvents=Read-Host 'Enter the number of events to display'
 	Clear-Host
 	Write-host 'Pick an option by entering the number of the option that you want'
 	Write-host '1. Keyword search'
 	Write-Host '2. timeframe search'
 	$option=read-host 'Pick an option'
+    #figures out what option the user picked
 	switch($option)
 	{
 		1{
@@ -348,8 +350,7 @@ function List-EventLogs
 		2{
 			Clear-Host
 			Write-host 'Ex: 1/17/2019'
-			$timeAfter=Read-Host 'Enter a date to look at events after that date'
-			$timeBefore=Read-host 'Enter date to look at events before that date'
+			$time=Read-Host 'Enter a date to look at events after that date'
 		}
 	}
 	$path=outputs -num 4
@@ -357,7 +358,8 @@ function List-EventLogs
 	{
 		if(!$keyword)
 		{
-			$checkError=Get-EventLog -logname $logName -Newest $numEvents -After $timeAfter -Before $timeBefore -ErrorAction SilentlyContinue
+            #Checks to see if there are any events based on the users inputs and then outputs the events based on the user input
+			$checkError=Get-EventLog -logname $logName -Newest $numEvents -After $time -ErrorAction SilentlyContinue
 			if($checkError -eq $True)
 			{
 				Clear-host
@@ -372,6 +374,7 @@ function List-EventLogs
 			}
 		}elseif(!$timeAfter)
 		{
+            #Checks to see if there are any events based on the users inputs and then outputs the events based on the user input
 			$CheckError=Get-EventLog -logname $logName -Newest $numEvents -Message $Keyword
 			if($checkError -eq $True)
 			{
@@ -387,13 +390,15 @@ function List-EventLogs
 			}
 		}
 	}else{
+        #checks if the path that the user entered exists
         $path=$path.replace('/','\')
 		$PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
 		if($PathExists -eq $True)
 		{
 			if(!$keyword)
 			{
-				$checkError=Get-EventLog -logname $logName -Newest $numEvents -After $timeAfter -Before $timeBefore -ErrorAction SilentlyContinue
+                #Checks to see if there are any events based on the users inputs and then outputs the events based on the user input
+				$checkError=Get-EventLog -logname $logName -Newest $numEvents -After $time -ErrorAction SilentlyContinue
 				if($checkError -eq $True)
 				{
 					$checkError | out-file $path'.cvs'
@@ -405,6 +410,7 @@ function List-EventLogs
 				}
 			}elseif(!$timeAfter)
 			{
+                #Checks to see if there are any events based on the users inputs and then outputs the events based on the user input
 				$CheckError=Get-EventLog -logname $logName -Newest $numEvents -Message $Keyword
 				if($checkError -eq $True)
 				{
@@ -428,7 +434,7 @@ function List-EventLogs
 		}
 	}
 }
-
+#System Admin menu
 function System-Admin
 {
     Clear-Host
@@ -453,7 +459,7 @@ function System-Admin
         '7' {return}
     }
 }
-
+#this function is used to send the email with the cve that the user wants to send
 function email
 {
     param($searchOutput)
@@ -501,7 +507,7 @@ function email
         MainMenu
     }
 }
-
+#this function is used to search the cve file for cve's based on the users input
 function Search-Vulnerabilities
 {
 	Clear-Host
@@ -511,6 +517,7 @@ function Search-Vulnerabilities
     write-host -ForegroundColor Green '1. Search file for CVE name'
     write-host -ForegroundColor Green '2. Search file for CVE description'
     $selection=Read-host 'Make a selection'
+    #this gets input from the user on what to do
     switch($selection)
     {
     	1{
@@ -541,13 +548,15 @@ function Search-Vulnerabilities
     }
     if($downFile -eq 'y' -or $downFile -eq 'Y')
     {
+       #This downloads the cve file
        $url='https://cve.mitre.org/data/downloads/allitems.csv'
        $mydocuments = [environment]::getfolderpath("mydocuments")
-       $mydocuments+='\SecVuln.cvs'
+       $mydocuments+='\SecVuln.csv'
        $destination=$mydocuments
        Import-Module BitsTransfer
        Start-BitsTransfer -Source $url -Destination $destination
        $csv=Import-Csv $destination -header "Name","Status","Description","References","Phase","Votes","Comments"
+       #this gets more user input
        if($cveName)
        {
             $searchOutput=$csv | where { $_.Name -match $cveName }
@@ -593,7 +602,7 @@ function Search-Vulnerabilities
         MainMenu
     }
 }
-
+#Security admin menu
 function Security-Admin
 {
     Clear-Host
@@ -610,7 +619,7 @@ function Security-Admin
         '3' {return}
     }
 }
-
+#the main menu
 function MainMenu
 {
     Clear-Host
