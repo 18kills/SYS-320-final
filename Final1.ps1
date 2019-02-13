@@ -10,39 +10,46 @@ function outputs
             Clear-Host
             Write-Host -ForegroundColor Magenta 'File has been saved to '$path'.cvs'
             Read-Host 'Press ENTER to continue...'
+	    	#This calls the function System-Admin made below
             System-Admin
         }
         2{
             Clear-Host
             Write-Host -ForegroundColor Red 'ERROR: File did not save. Please try again'
             Read-Host 'Press ENTER to continue...'
+	    	#This calls the List-Processes function made below
             List-Processes
         }
         3{
             Clear-Host
             Write-Host -ForegroundColor Red 'ERROR: The path that you entered does not exists. Please try again'
             Read-Host 'Press ENTER to continue...'
+	   		#This calls the List-Processes function made below
             List-Processes
         }
         4{
+			#This asks the user for a path to save the results to
             Clear-Host
             Write-Host -ForegroundColor Yellow 'Enter the filename and loction to save the file'
             Write-Host -ForegroundColor Yellow 'Leave blank to not save the output'
             Write-Host -ForegroundColor Yellow 'EX: C:\Users\Username\Documents\filename'
             $path=Read-Host 'Filename and location'
-            return $path
+            #Returns the users input when fucntion outputs -num 4 is called
+			return $path
         }
     }
 }
 #This function is used to get user responses and then output running processes based on the users responses
 function List-Processes
 {
+	#This asks the user to enter a process name or leave blank
     Clear-Host
     Write-Host -ForegroundColor Green 'Enter the name of the process'
     Write-Host -ForegroundColor Green 'Leave blank if you want to see all running processes'
     $processName=Read-Host 'Enter Process name'
     if(!$processName)
     {
+		#The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
         $path=outputs -num 4
         if(!$path)
         {
@@ -52,7 +59,7 @@ function List-Processes
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
-            #this checks if the path exists
+            #This checks if the path that the user entered exists
             $path=$path.replace('/','\')
             $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
             if($PathExists -eq $True)
@@ -81,7 +88,7 @@ function List-Processes
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
-            #gets the path to save the file from the user
+            #The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
             $path=outputs -num 4
             if(!$path)
             {
@@ -91,6 +98,7 @@ function List-Processes
                 Read-Host 'Press ENTER to continue...'
                 System-Admin
             }else{
+				#Checks if the path that the user entered exits
                 $path=$path.replace('/','\')
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
@@ -121,7 +129,7 @@ function List-Services
     $serviceName=Read-Host 'Enter service name'
     if(!$serviceName)
     {
-        #gets a path for a file to output results to
+        #The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
         $path=outputs -num 4
         if(!$path)
         {
@@ -131,7 +139,7 @@ function List-Services
             Read-Host 'Press Enter to return to the Systen Admin Menu'
             System-Admin
         }else{
-            #checks if the path exists
+            #This checks if the path entered by the user exists
             $path=$path.replace('/','\')
             $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
             if($PathExists -eq $True)
@@ -160,6 +168,7 @@ function List-Services
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
+			#The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
             $path=outputs -num 4
             if(!$path)
             {
@@ -169,6 +178,7 @@ function List-Services
                 Read-Host 'Press ENTER to continue...'
                 System-Admin
             }else{
+				#This checks if the path that the user entered exists
                 $path=$path.replace('/','\')
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
@@ -199,7 +209,7 @@ function List-Packages
     $packageName=Read-Host 'Enter Package name'
     if(!$packageName)
     {
-        #gets a path for the save file from the user
+        #The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
         $path=outputs -num 4
         if(!$path)
         {
@@ -209,7 +219,7 @@ function List-Packages
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
-            #checks if the path exists
+            #This checks if the path that the user entered exists
             $path=$path.replace('/','\')
             $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
             if($PathExists -eq $True)
@@ -238,6 +248,7 @@ function List-Packages
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
+			#The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
             $path=outputs -num 4
             if(!$path)
             {
@@ -247,6 +258,7 @@ function List-Packages
                 Read-Host 'Press ENTER to continue...'
                 System-Admin
             }else{
+				#This checks if the path that the user entered exists
                 $path=$path.replace('/','\')
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
@@ -271,7 +283,7 @@ function List-Packages
 function List-SysInfo
 {
     Clear-Host
-    #Gets a path for file to send info
+    #The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
     $path=outputs -num 4
     if(!$path)
     {
@@ -283,7 +295,7 @@ function List-SysInfo
         read-host 'Press ENTER to return to the System Admin Menu'
         System-Admin
     }else{
-        #checks if the path exists
+        #checks if the path that the user entered exists
         $path=$path.replace('/','\')
         $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
         if($PathExists -eq $True)
@@ -308,19 +320,21 @@ function List-SysInfo
 #this function is used with list-eventlogs
 function CheckLogName
 {
-    #this checks if thye log name that the user entered exists
 	clear-host
+	#Asks the user for the name of a log file
 	$logName=Read-Host 'Enter the name of log'
+	#this checks if thye log name that the user entered exists
 	$CheckIfExists=Get-EventLog -logname $logName -ErrorAction SilentlyContinue
 	if(!$CheckIfExists)
 	{
-        #tells the user the log doesnt exist
 		Clear-host
+		#tells the user the log doesnt exist
 		Write-host -foregroundcolor red 'The log Name you entered does not exist. Please try again'
 		Read-Host 'Press ENTER to continue'
+		#This calls the function CheckLogName
 		CheckLogName
 	}else{
-        #returns the name og the log the user specified if the log was found
+        #returns the name of the log the user specified if the log was found
 	    return $logName
     }
 }
