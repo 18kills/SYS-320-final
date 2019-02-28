@@ -1,8 +1,9 @@
+#Author: Richard T Swierk
+
 #this function is used to send the email with the cve that the user wants to send
 function email
 {
     param($searchOutput)
-    clear-host
     $answer=read-host 'Do you want to email the results (Y/N)'
     if($answer -eq 'y' -or $answer -eq 'Y')
     {
@@ -95,6 +96,7 @@ function userInput
             $saveFile=Read-host 'Do you want to save the output(Y/N)'
             if($saveFile -eq 'y' -or $saveFile -eq 'Y')
             {
+                #Asks the user to enter a file path
                 clear-host
                 Write-host 'Enter the path to save the file'
                 write-host 'Exmaple: C:\Users\Username\Documents\filename.csv'
@@ -104,21 +106,29 @@ function userInput
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
                 {
+                    #Sends the output to a file
+                    clear-host
                     $searchOutput | out-file $path
+                    write-host "The output has been saved to the file"
                     email -searchOutput $searchOutput
                 }else{
+                    #Outputs an error message
                     Clear-host
-                    write-host -ForegroundColor Red 'The path you entered does not exist'
+                    write-host -ForegroundColor Red 'ERROR: The path you entered does not exist'
                     read-host 'Press ENTER to exit'
                     return
                 }
             }
         }else{
-            write-host -foregroundColor red 'You search came back with nothing'
+            #Outputs an error message
+            clear-host
+            write-host -foregroundColor red 'ERROR: Your search came back with nothing'
             read-host 'Press ENTER to exit'
             return
         }
     }elseif($SoftPackName){
+        clear-host
+        write-host "Searching the cve file for your results..."
         $searchOutput=$csv | where { $_.Description -match $SoftPackName }
         if($searchOutput)
         {
@@ -128,6 +138,7 @@ function userInput
             $saveFile=Read-host 'Do you want to save the output(Y/N)'
             if($saveFile -eq 'y' -or $saveFile -eq 'Y')
             {
+                #Asks the user to enter a file path
                 clear-host
                 Write-host 'Enter the path to save the file'
                 write-host 'Exmaple: C:\Users\Username\Documents\filename.csv'
@@ -137,30 +148,40 @@ function userInput
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
                 {
+                    #Sends the output to a file
+                    clear-host
                     $searchOutput | out-file $path
+                    write-host "The output has been saved to the file"
                     email -searchOutput $searchOutput
                 }else{
+                    #outputs an error message
                     Clear-host
-                    write-host -ForegroundColor Red 'The path you entered does not exist'
+                    write-host -ForegroundColor Red 'ERROR: The path you entered does not exist'
                     read-host 'Press ENTER to exit'
                     return
                 }
             }
         }else{
-            write-host -foregroundColor red 'You search came back with nothing'
+            #Outputs an error message
+            clear-host
+            write-host -foregroundColor red 'ERROR: Your search came back with nothing'
             read-host 'Press ENTER to exit'
             return
         }
     }elseif($packAndVersion){
+        clear-host
+        write-host "Searching the cve file for your results..."
         $searchOutput=$csv | where { $_.Description -match $packAndVersion }
         if($searchOutput)
         {
+            clear-host
             $searchOutput
             read-host 'Press ENTER to continue'
-            Clear
+            Clear-host
             $saveFile=Read-host 'Do you want to save the output(Y/N)'
             if($saveFile -eq 'y' -or $saveFile -eq 'Y')
             {
+                #Asks the user to enter a file path
                 clear-host
                 Write-host 'Enter the path to save the file'
                 write-host 'Exmaple: C:\Users\Username\Documents\filename.csv'
@@ -170,17 +191,23 @@ function userInput
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
                 {
+                    #Sends the output to a file
+                    clear-host
                     $searchOutput | out-file $path
+                    write-host "The output has been saved to the file"
                     email -searchOutput $searchOutput
                 }else{
+                    #Outputs an error message
                     Clear-host
-                    write-host -ForegroundColor Red 'The path you entered does not exist'
+                    write-host -ForegroundColor Red 'ERROR: The path you entered does not exist'
                     read-host 'Press ENTER to exit'
                     return
                 }
             }
         }else{
-            write-host -foregroundColor red 'You search came back with nothing'
+            #Outputs an error message
+            clear-host
+            write-host -foregroundColor red 'ERROR: Your search came back with nothing'
             read-host 'Press ENTER to exit'
             return
         }
@@ -189,20 +216,25 @@ function userInput
 #this function is used to search the cve file for cve's based on the users input
 function Search-Vulnerabilities
 {
-	Clear-Host
+    Clear-Host
     $downFile=Read-host 'Download the Security vulnerabilites file(Y/N)'
     if($downFile -eq 'y' -or $downFile -eq 'Y')
     {
-       #This downloads the cve file
-       $url='https://cve.mitre.org/data/downloads/allitems.csv'
-       $mydocuments = [environment]::getfolderpath("mydocuments")
-       $mydocuments+='\SecVuln.csv'
-       $destination=$mydocuments
-       Import-Module BitsTransfer
-       Start-BitsTransfer -Source $url -Destination $destination
-       $csv=Import-Csv $destination -header "Name","Status","Description","References","Phase","Votes","Comments"
-       userInput -csv $csv
+        clear-host
+        #This downloads the cve file
+        $url='https://cve.mitre.org/data/downloads/allitems.csv'
+        #This get the path to the current users Documents folder
+        $mydocuments = [environment]::getfolderpath("mydocuments")
+        $mydocuments+='\SecVuln.csv'
+        $destination=$mydocuments
+        Import-Module BitsTransfer
+        Start-BitsTransfer -Source $url -Destination $destination
+        #This imports the csv file into the program
+        $csv=Import-Csv $destination -header "Name","Status","Description","References","Phase","Votes","Comments"
+        #Calls the function userInput and enters the parameter $csv
+        userInput -csv $csv
     }elseif($downFile -eq 'n' -or $downFile -eq 'N'){
+        clear-host
         Write-host 'Enter the path the the CVE file'
         write-host 'Exmaple: C:\Users\Username\Documents\filename.csv'
         $path=read-host 'file path'
@@ -211,11 +243,14 @@ function Search-Vulnerabilities
         $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
         if($PathExists -eq $True)
         {
-           $csv=Import-Csv $path -header "Name","Status","Description","References","Phase","Votes","Comments" 
-           userInput -csv $csv
+            #This imports the csv file into the program
+            $csv=Import-Csv $path -header "Name","Status","Description","References","Phase","Votes","Comments" 
+            #Calls the function userInput and enters the parameter $csv
+            userInput -csv $csv
         }else{
+            #Outputs an error message
             Clear-host
-            write-host -ForegroundColor Red 'The path you entered does not exist'
+            write-host -ForegroundColor Red 'ERROR: The path you entered does not exist'
             read-host 'Press ENTER to exit'
             return
         }
