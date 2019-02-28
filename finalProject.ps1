@@ -1,3 +1,5 @@
+#Author: Richard T Swierk
+
 #This function is used for outputs that are used multiple times for the functions below
 function outputs
 {
@@ -10,46 +12,39 @@ function outputs
             Clear-Host
             Write-Host -ForegroundColor Magenta 'File has been saved to '$path'.cvs'
             Read-Host 'Press ENTER to continue...'
-	    	#This calls the function System-Admin made below
             System-Admin
         }
         2{
             Clear-Host
             Write-Host -ForegroundColor Red 'ERROR: File did not save. Please try again'
             Read-Host 'Press ENTER to continue...'
-	    	#This calls the List-Processes function made below
             List-Processes
         }
         3{
             Clear-Host
             Write-Host -ForegroundColor Red 'ERROR: The path that you entered does not exists. Please try again'
             Read-Host 'Press ENTER to continue...'
-	   		#This calls the List-Processes function made below
             List-Processes
         }
         4{
-			#This asks the user for a path to save the results to
             Clear-Host
             Write-Host -ForegroundColor Yellow 'Enter the filename and loction to save the file'
             Write-Host -ForegroundColor Yellow 'Leave blank to not save the output'
             Write-Host -ForegroundColor Yellow 'EX: C:\Users\Username\Documents\filename'
             $path=Read-Host 'Filename and location'
-            #Returns the users input when fucntion outputs -num 4 is called
-			return $path
+            return $path
         }
     }
 }
 #This function is used to get user responses and then output running processes based on the users responses
 function List-Processes
 {
-	#This asks the user to enter a process name or leave blank
     Clear-Host
     Write-Host -ForegroundColor Green 'Enter the name of the process'
     Write-Host -ForegroundColor Green 'Leave blank if you want to see all running processes'
     $processName=Read-Host 'Enter Process name'
     if(!$processName)
     {
-		#The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
         $path=outputs -num 4
         if(!$path)
         {
@@ -59,7 +54,7 @@ function List-Processes
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
-            #This checks if the path that the user entered exists
+            #this checks if the path exists
             $path=$path.replace('/','\')
             $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
             if($PathExists -eq $True)
@@ -88,7 +83,7 @@ function List-Processes
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
-            #The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
+            #gets the path to save the file from the user
             $path=outputs -num 4
             if(!$path)
             {
@@ -98,7 +93,6 @@ function List-Processes
                 Read-Host 'Press ENTER to continue...'
                 System-Admin
             }else{
-				#Checks if the path that the user entered exits
                 $path=$path.replace('/','\')
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
@@ -129,7 +123,7 @@ function List-Services
     $serviceName=Read-Host 'Enter service name'
     if(!$serviceName)
     {
-        #The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
+        #gets a path for a file to output results to
         $path=outputs -num 4
         if(!$path)
         {
@@ -139,7 +133,7 @@ function List-Services
             Read-Host 'Press Enter to return to the Systen Admin Menu'
             System-Admin
         }else{
-            #This checks if the path entered by the user exists
+            #checks if the path exists
             $path=$path.replace('/','\')
             $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
             if($PathExists -eq $True)
@@ -168,7 +162,6 @@ function List-Services
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
-			#The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
             $path=outputs -num 4
             if(!$path)
             {
@@ -178,7 +171,6 @@ function List-Services
                 Read-Host 'Press ENTER to continue...'
                 System-Admin
             }else{
-				#This checks if the path that the user entered exists
                 $path=$path.replace('/','\')
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
@@ -209,7 +201,7 @@ function List-Packages
     $packageName=Read-Host 'Enter Package name'
     if(!$packageName)
     {
-        #The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
+        #gets a path for the save file from the user
         $path=outputs -num 4
         if(!$path)
         {
@@ -219,7 +211,7 @@ function List-Packages
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
-            #This checks if the path that the user entered exists
+            #checks if the path exists
             $path=$path.replace('/','\')
             $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
             if($PathExists -eq $True)
@@ -248,7 +240,6 @@ function List-Packages
             Read-Host 'Press ENTER to return to the System Admin Menu'
             System-Admin
         }else{
-			#The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
             $path=outputs -num 4
             if(!$path)
             {
@@ -258,7 +249,6 @@ function List-Packages
                 Read-Host 'Press ENTER to continue...'
                 System-Admin
             }else{
-				#This checks if the path that the user entered exists
                 $path=$path.replace('/','\')
                 $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
                 if($PathExists -eq $True)
@@ -283,7 +273,7 @@ function List-Packages
 function List-SysInfo
 {
     Clear-Host
-    #The below command calls the function outputs with the parameters -num 4 which will ask the user for a file path
+    #Gets a path for file to send info
     $path=outputs -num 4
     if(!$path)
     {
@@ -295,7 +285,7 @@ function List-SysInfo
         read-host 'Press ENTER to return to the System Admin Menu'
         System-Admin
     }else{
-        #checks if the path that the user entered exists
+        #checks if the path exists
         $path=$path.replace('/','\')
         $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
         if($PathExists -eq $True)
@@ -320,21 +310,21 @@ function List-SysInfo
 #this function is used with list-eventlogs
 function CheckLogName
 {
+    #this checks if thye log name that the user entered exists
 	clear-host
-	#Asks the user for the name of a log file
+    get-eventlog -list
 	$logName=Read-Host 'Enter the name of log'
-	#this checks if thye log name that the user entered exists
 	$CheckIfExists=Get-EventLog -logname $logName -ErrorAction SilentlyContinue
 	if(!$CheckIfExists)
 	{
+        #tells the user the log doesnt exist
 		Clear-host
-		#tells the user the log doesnt exist
+
 		Write-host -foregroundcolor red 'The log Name you entered does not exist. Please try again'
 		Read-Host 'Press ENTER to continue'
-		#This calls the function CheckLogName
 		CheckLogName
 	}else{
-        #returns the name of the log the user specified if the log was found
+        #returns the name og the log the user specified if the log was found
 	    return $logName
     }
 }
@@ -392,11 +382,13 @@ function List-EventLogs
 			$CheckError=Get-EventLog -logname $logName -Newest $numEvents -Message $Keyword
 			if($checkError -eq $True)
 			{
+                #outputs the event logs that the user specified
 				Clear-host
 				$checkError
 				Read-Host 'Press ENTER to return to System Admin Menu'
 				System-Admin
 			}else{
+                #Outputs an error message
 				Clear-host
 				Write-host -ForegroundColor Red 'ERROR the paramaters you entered do not return any results'
 				read-host 'Press ENTER to return to System Admin Menu'
@@ -513,7 +505,6 @@ function email
         $smtpport=read-host 'Enter the smtp server port'
         Send-MailMessage -From $from -to $to -Subject $subject -Body $body"`n$output" -SmtpServer $smtpserver -port $smtpport -UseSsl -Credential (Get-Credential) 
         clear-host
-        write-host -ForegroundColor green 'The email was sent'
         read-host 'Press ENTER to return to the main menu'
         MainMenu
     }else{
@@ -521,12 +512,11 @@ function email
         MainMenu
     }
 }
-#this function is used to search the cve file for cve's based on the users input
-function Search-Vulnerabilities
+#this gets more user input
+function CVEoptions
 {
-	Clear-Host
-    $downFile=Read-host 'Download the Security vulnerabilites file(Y/N)'
-	Clear-Host
+    param($csv)
+    Clear-Host
     Write-Host -ForegroundColor Yellow 'To select an option enter the options number'
     write-host -ForegroundColor Green '1. Search file for CVE name'
     write-host -ForegroundColor Green '2. Search file for CVE description'
@@ -560,6 +550,65 @@ function Search-Vulnerabilities
 			}
 		}
     }
+    clear-host
+    if($cveName)
+    {
+        #Searches for cve by name
+        clear-host
+        write-host 'Searching for the CVE'
+        $searchOutput=$csv | where { $_.Name -match $cveName }
+        $searchOutput
+        if($searchOutput)
+        {
+            read-host 'Press ENTER to continue'
+            email -searchOutput $searchOutput
+        }else{
+            #Outputs an error message
+            write-host -foregroundColor red 'ERROR: Your search came back with nothing'
+            read-host 'Press ENTER to return to main menu'
+            MainMenu
+        }
+    }elseif($SoftPackName){
+    #Searches for cve by software package name
+        clear-host
+        write-host 'Searching for the CVE'
+        $searchOutput=$csv | where { $_.Description -match $SoftPackName }
+        $searchOutput
+        if($searchOutput)
+        {
+            read-host 'Press ENTER to continue'
+            email -searchOutput $searchOutput
+        }else{
+            #Outputs an error message
+            write-host -foregroundColor red 'ERROR: Your search came back with nothing'
+            read-host 'Press ENTER to return to main menu'
+            MainMenu
+        }
+    }elseif($packAndVersion){
+        #Searches for cve by Software Package Name and Version
+        clear-host
+        write-host 'Searching for the CVE'
+        $searchOutput=$csv | where { $_.Description -match $packAndVersion }
+        $searchOutput
+        if($searchOutput)
+        {
+            read-host 'Press ENTER to continue'
+            email -searchOutput $searchOutput
+        }else{
+            #Outputs an error message
+            write-host -foregroundColor red 'ERROR: Your search came back with nothing'
+            read-host 'Press ENTER to return to main menu'
+            MainMenu
+        }
+    }
+}
+#this function is used to search the cve file for cve's based on the users input
+function Search-Vulnerabilities
+{
+	Clear-Host
+	#Asks the users if they want to download the Security vulnerabilites file or not
+	write-host "The file will be downloaded from cve.mitre.org/data/downloads/allitems.csv `nIf downloaded the file will be saved in the current users Documents file `nand will be saved as SecVuln.csv `nIf the file is not already downloaded on the current users device, then the `nfile must be downloaded now to use this function"
+    $downFile=Read-host 'Download the Security vulnerabilites file(Y/N)'
     if($downFile -eq 'y' -or $downFile -eq 'Y')
     {
        #This downloads the cve file
@@ -569,51 +618,27 @@ function Search-Vulnerabilities
        $destination=$mydocuments
        Import-Module BitsTransfer
        Start-BitsTransfer -Source $url -Destination $destination
+       #The following command imports the csv file that was just downloaded
        $csv=Import-Csv $destination -header "Name","Status","Description","References","Phase","Votes","Comments"
-       #this gets more user input
-       if($cveName)
-       {
-            $searchOutput=$csv | where { $_.Name -match $cveName }
-            $searchOutput
-            if($searchOutput)
-            {
-                read-host 'Press ENTER to continue'
-                email -searchOutput $searchOutput
-            }else{
-                write-host -foregroundColor red 'You search came back with nothing'
-                read-host 'Press ENTER to return to main menu'
-                MainMenu
-            }
-       }elseif($SoftPackName){
-            $searchOutput=$csv | where { $_.Description -match $SoftPackName }
-            $searchOutput
-            if($searchOutput)
-            {
-                read-host 'Press ENTER to continue'
-                email -searchOutput $searchOutput
-            }else{
-                write-host -foregroundColor red 'You search came back with nothing'
-                read-host 'Press ENTER to return to main menu'
-                MainMenu
-            }
-       }elseif($packAndVersion){
-            $searchOutput=$csv | where { $_.Description -match $packAndVersion }
-            $searchOutput
-            if($searchOutput)
-            {
-                read-host 'Press ENTER to continue'
-                email -searchOutput $searchOutput
-            }else{
-                write-host -foregroundColor red 'You search came back with nothing'
-                read-host 'Press ENTER to return to main menu'
-                MainMenu
-            }
-       }
-       
+       #This calls the function CVEoptions
+       CVEoptions -csv $csv
     }elseif($downFile -eq 'n' -or $downFile -eq 'N'){
-        Write-host 'The file has to be downloaded in order to search it'
-        read-host 'Press ENTER to return the Main Menu'
-        MainMenu
+        clear-host
+        Write-Host -ForegroundColor Yellow 'EX: C:\Users\Username\Documents\filename.csv'
+        $path=read-host 'Enter the path to the CVE file'
+        #checks if the path exists
+        $path=$path.replace('/','\')
+        $PathExists=Test-Path $path.Substring(0,$path.LastIndexOf('\'))
+        if($PathExists -eq $True)
+        {
+            #The following command imports the csv file that was just downloaded
+            $csv=Import-Csv $path -header "Name","Status","Description","References","Phase","Votes","Comments"
+            #This calls the function CVEoptions
+            CVEoptions -csv $csv
+        }else{
+            #calls the function Outputs and uses the paramater num
+			outputs -num 3
+		}
     }
 }
 #Security admin menu
